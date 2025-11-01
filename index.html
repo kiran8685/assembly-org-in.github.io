@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Assembly — Coming Soon</title>
+<style>
+  :root{
+    color-scheme: dark;
+  }
+  html,body{
+    height:100%;
+    margin:0;
+    background:#000;
+    color:#fff;
+    font-family: "Courier New", monospace;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+  }
+
+  /* responsive size: clamps between 32px and 120px */
+  .typewriter {
+    font-size: clamp(32px, 8vw, 120px);
+    line-height: 1;
+    display:inline-block;
+    white-space:nowrap;
+    /* caret */
+    border-right: .12em solid #fff;
+    box-sizing: content-box;
+    padding-right: 0.06em;
+    /* make sure text is visible as we change content via JS */
+    overflow: visible;
+  }
+
+  /* blinking caret animation */
+  @keyframes blink {
+    0%, 49% { border-color: #fff; }
+    50%, 100% { border-color: transparent; }
+  }
+  .typewriter {
+    animation: blink 1s steps(1) infinite;
+  }
+
+  /* small helper to keep things centered inside mobile safe areas */
+  .wrap {
+    padding: 2vh 4vw;
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div id="text" class="typewriter" aria-live="polite"></div>
+  </div>
+
+  <script>
+    const texts = ["assembly.", "Coming soon"];
+    const typingSpeed = 120;   // ms per character when typing
+    const erasingSpeed = 60;   // ms per character when deleting
+    const pauseAfterTyping = 900; // pause when one line is fully typed
+    const pauseAfterErasing = 300; // short pause after erasing (optional)
+
+    const el = document.getElementById('text');
+
+    let textIndex = 0;
+    let charIndex = 0;
+    let isDeleting = false;
+
+    function typeLoop() {
+      const current = texts[textIndex];
+      if (!isDeleting) {
+        // type forward
+        el.textContent = current.substring(0, charIndex + 1);
+        charIndex++;
+        if (charIndex === current.length) {
+          // finished typing this word
+          isDeleting = true;
+          setTimeout(typeLoop, pauseAfterTyping);
+          return;
+        }
+      } else {
+        // delete
+        el.textContent = current.substring(0, charIndex - 1);
+        charIndex--;
+        if (charIndex === 0) {
+          // finished deleting, move to next text
+          isDeleting = false;
+          textIndex = (textIndex + 1) % texts.length;
+          setTimeout(typeLoop, pauseAfterErasing);
+          return;
+        }
+      }
+      const delay = isDeleting ? erasingSpeed : typingSpeed;
+      setTimeout(typeLoop, delay);
+    }
+
+    // start after a small initial delay so caret is visible first
+    setTimeout(typeLoop, 300);
+  </script>
+</body>
+</html>
